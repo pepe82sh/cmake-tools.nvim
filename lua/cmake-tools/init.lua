@@ -121,7 +121,7 @@ function cmake.generate(opt, callback)
         local build_preset = presets:get_build_preset(config.build_preset)
         if build_preset then
           local preset =
-            presets:get_configure_preset(build_preset.configurePreset, { include_hidden = true })
+              presets:get_configure_preset(build_preset.configurePreset, { include_hidden = true })
           if preset then
             config.configure_preset = preset.name
           end
@@ -357,7 +357,7 @@ function cmake.build(opt, callback)
     vim.list_extend(args, { "--target", opt.target })
     vim.list_extend(args, fargs)
   elseif config.build_target == "all" then
-    vim.list_extend(args, { "--target", "all" })
+    -- vim.list_extend(args, { "--target", "all" })
     vim.list_extend(args, fargs)
   else
     vim.list_extend(args, { "--target", config.build_target })
@@ -491,13 +491,13 @@ function cmake.get_launch_path(target)
 
   if config.base_settings.working_dir and type(config.base_settings.working_dir) == "string" then
     launch_path =
-      cmake.substitute_path(config.base_settings.working_dir, cmake.get_target_vars(target))
+        cmake.substitute_path(config.base_settings.working_dir, cmake.get_target_vars(target))
   end
 
   if
-    config.target_settings[target]
-    and config.target_settings[target].working_dir
-    and type(config.target_settings[target].working_dir) == "string"
+      config.target_settings[target]
+      and config.target_settings[target].working_dir
+      and type(config.target_settings[target].working_dir) == "string"
   then
     launch_path = config.target_settings[target].working_dir
     launch_path = cmake.substitute_path(launch_path, cmake.get_target_vars(target))
@@ -526,8 +526,8 @@ function cmake.run(opt, callback)
       local launch_path = cmake.get_launch_path(opt.target)
       local env = environment.get_run_environment(config, opt.target)
       local _args = opt.args and opt.args
-        or utils.get_nested(config, "target_settings", opt.target, "args")
-        or {}
+          or utils.get_nested(config, "target_settings", opt.target, "args")
+          or {}
       local cmd = target_path
       utils.run(cmd, config.env_script, env, _args, launch_path, config.runner, callback)
     end)
@@ -547,19 +547,19 @@ function cmake.run(opt, callback)
         end
       )
     elseif
-      result_code == Types.NOT_SELECT_LAUNCH_TARGET
-      or result_code == Types.NOT_A_LAUNCH_TARGET
-      or result_code == Types.NOT_EXECUTABLE
+        result_code == Types.NOT_SELECT_LAUNCH_TARGET
+        or result_code == Types.NOT_A_LAUNCH_TARGET
+        or result_code == Types.NOT_EXECUTABLE
     then
       -- Re Select a target that could launch
       return cmake.select_launch_target(false, function(launch_result)
-        if launch_result:is_ok() then
-          cmake.run(opt, callback)
-        else
-          callback(launch_result)
-        end
-      end),
-        true
+            if launch_result:is_ok() then
+              cmake.run(opt, callback)
+            else
+              callback(launch_result)
+            end
+          end),
+          true
     else -- if result_code == Types.SELECTED_LAUNCH_TARGET_NOT_BUILT
       -- Build select launch target every time
       return cmake.build(
@@ -649,11 +649,11 @@ end
 
 function cmake.select_build_type(callback)
   callback = type(callback) == "function" and callback
-    or function(result)
-      if result:is_ok() then
-        cmake.generate({ bang = false, fargs = {} }, nil)
+      or function(result)
+        if result:is_ok() then
+          cmake.generate({ bang = false, fargs = {} }, nil)
+        end
       end
-    end
   if check_active_job_and_notify(callback) then
     return
   end
@@ -693,11 +693,11 @@ end
 
 function cmake.select_kit(callback)
   callback = type(callback) == "function" and callback
-    or function(result)
-      if result:is_ok() then
-        cmake.generate({ bang = false, fargs = {} }, nil)
+      or function(result)
+        if result:is_ok() then
+          cmake.generate({ bang = false, fargs = {} }, nil)
+        end
       end
-    end
   if check_active_job_and_notify(callback) then
     return
   end
@@ -738,11 +738,11 @@ end
 
 function cmake.select_configure_preset(callback)
   callback = type(callback) == "function" and callback
-    or function(result)
-      if result:is_ok() then
-        cmake.generate({ bang = false, fargs = {} }, nil)
+      or function(result)
+        if result:is_ok() then
+          cmake.generate({ bang = false, fargs = {} }, nil)
+        end
       end
-    end
   if check_active_job_and_notify(callback) then
     return
   end
@@ -787,11 +787,11 @@ end
 
 function cmake.select_build_preset(callback)
   callback = type(callback) == "function" and callback
-    or function(result)
-      if result:is_ok() then
-        cmake.generate({ bang = false, fargs = {} }, nil)
+      or function(result)
+        if result:is_ok() then
+          cmake.generate({ bang = false, fargs = {} }, nil)
+        end
       end
-    end
   if check_active_job_and_notify(callback) then
     return
   end
@@ -804,7 +804,7 @@ function cmake.select_build_preset(callback)
   if Presets.exists(config.cwd) then
     local presets = Presets:parse(config.cwd)
     local build_preset_names =
-      presets:get_build_preset_names({ include_disabled = config:show_disabled_build_presets() })
+        presets:get_build_preset_names({ include_disabled = config:show_disabled_build_presets() })
     build_preset_names = vim.list_extend(build_preset_names, { "None" })
     local format_preset_name = function(p_name)
       if p_name == "None" then
@@ -833,7 +833,7 @@ function cmake.select_build_preset(callback)
         )
         local associated_configure_preset_name = associated_configure_preset
             and associated_configure_preset.name
-          or nil
+            or nil
         local configure_preset_updated = false
 
         if config.configure_preset ~= associated_configure_preset_name then
@@ -973,8 +973,8 @@ local function convert_to_table(str)
   end
 
   if pcall(function()
-    vim.inspect(fn())
-  end) then
+        vim.inspect(fn())
+      end) then
     str = "return " .. vim.inspect(fn())
     fn = loadstring(str)
     if not fn then
@@ -1205,8 +1205,8 @@ function cmake.get_launch_args()
     return {}
   end
   if
-    config.target_settings[cmake.get_launch_target()]
-    and config.target_settings[cmake.get_launch_target()].args
+      config.target_settings[cmake.get_launch_target()]
+      and config.target_settings[cmake.get_launch_target()].args
   then
     return config.target_settings[cmake.get_launch_target()].args
   end
@@ -1488,10 +1488,10 @@ function cmake.register_autocmd()
           local file = ev.file
           local all_targets = config:build_targets_with_sources()
           if
-            all_targets
-            and all_targets.data
-            and type(all_targets.data) == "table"
-            and all_targets.data["sources"]
+              all_targets
+              and all_targets.data
+              and type(all_targets.data) == "table"
+              and all_targets.data["sources"]
           then
             for _, target in ipairs(all_targets.data["sources"]) do
               if target.path == file then
@@ -1576,8 +1576,8 @@ function cmake.register_dap_function()
             program = result.data,
             cwd = cmake.get_launch_path(opt.target),
             args = opt.args and opt.args
-              or utils.get_nested(config, "target_settings", opt.target, "args")
-              or {},
+                or utils.get_nested(config, "target_settings", opt.target, "args")
+                or {},
             env = env,
             initCommands = initCmds,
           }
@@ -1590,22 +1590,22 @@ function cmake.register_dap_function()
         local result_code = result.code
 
         if
-          result_code == Types.NOT_CONFIGURED or result_code == Types.CANNOT_FIND_CODEMODEL_FILE
+            result_code == Types.NOT_CONFIGURED or result_code == Types.CANNOT_FIND_CODEMODEL_FILE
         then
           -- Configure it
           return cmake.generate({ bang = false, fargs = utils.deepcopy(opt.fargs) }, function()
             cmake.debug(opt, callback)
           end)
         elseif
-          result_code == Types.NOT_SELECT_LAUNCH_TARGET
-          or result_code == Types.NOT_A_LAUNCH_TARGET
-          or result_code == Types.NOT_EXECUTABLE
+            result_code == Types.NOT_SELECT_LAUNCH_TARGET
+            or result_code == Types.NOT_A_LAUNCH_TARGET
+            or result_code == Types.NOT_EXECUTABLE
         then
           -- Re Select a target that could launch
           return cmake.select_launch_target(false, function()
-            cmake.debug(opt, callback)
-          end),
-            true
+                cmake.debug(opt, callback)
+              end),
+              true
         else -- if result_code == Types.SELECTED_LAUNCH_TARGET_NOT_BUILT then
           -- Build select launch target every time
           return cmake.build(
@@ -1693,8 +1693,8 @@ function cmake.register_dap_function()
     --- CMake debug
     vim.api.nvim_create_user_command(
       "CMakeDebug", -- name
-      cmake.debug, -- command
-      { -- opts
+      cmake.debug,  -- command
+      {             -- opts
         nargs = "*",
         desc = "CMake debug",
       }
@@ -1704,7 +1704,7 @@ function cmake.register_dap_function()
     vim.api.nvim_create_user_command(
       "CMakeQuickDebug", -- name
       cmake.quick_debug, -- command
-      { -- opts
+      {                  -- opts
         nargs = "*",
         desc = "CMake quick debug",
       }
@@ -1712,9 +1712,9 @@ function cmake.register_dap_function()
 
     --- CMake debug current file
     vim.api.nvim_create_user_command(
-      "CMakeDebugCurrentFile", -- name
+      "CMakeDebugCurrentFile",  -- name
       cmake.debug_current_file, -- command
-      { -- opts
+      {                         -- opts
         nargs = "*",
         desc = "CMake debug current file",
       }
@@ -1768,9 +1768,9 @@ function cmake.register_telescope_function()
 
     --- CMake show files
     vim.api.nvim_create_user_command(
-      "CMakeShowTargetFiles", -- name
+      "CMakeShowTargetFiles",  -- name
       cmake.show_target_files, -- command
-      { -- opts
+      {                        -- opts
         nargs = "*",
         desc = "CMake show cmake model files or target",
       }
